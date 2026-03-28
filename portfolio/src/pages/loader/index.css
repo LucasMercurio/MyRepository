@@ -1,0 +1,26 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-black);
+    font-family: monospace;
+}
+
+.loaderTerminal {
+    height: 100%;
+    padding: 40px;
+    color: var(--gray-font);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.loaderTerminal p{
+    margin: 4px 0;
+    font-size: 18px;
+}
+
+.cursor {
+    display: inline-block;
+    margin-left: 5px;
+    animation: blink 1s infinite;
+}
