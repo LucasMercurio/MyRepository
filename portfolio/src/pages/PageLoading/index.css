@@ -1,0 +1,61 @@
+.pageLoading {
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(ellipse 120% 80% at 50% 20%, #0a0a18 0%, #0a0a0a 55%);
+    color: var(--gray-font, #adb3ae);
+    font-family: ui-monospace, 'Cascadia Code', monospace;
+    animation: pageLoadingFadeIn 0.6s ease-out forwards;
+}
+
+@keyframes pageLoadingFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.pageLoading__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 2rem;
+}
+
+.pageLoading__text {
+    margin: 0;
+    font-size: 0.95rem;
+    letter-spacing: 0.06em;
+    opacity: 0.85;
+    animation: pageLoadingFadeIn 0.8s ease-out 0.2s both;
+}
+
+.pageLoading__bar {
+    width: min(220px, 70vw);
+    height: 3px;
+    border-radius: 999px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(0, 0, 39, 0.6),
+        rgba(255, 255, 255, 0.35),
+        rgba(0, 0, 46, 0.7),
+        transparent
+    );
+    background-size: 200% 100%;
+    animation: pageLoadingShimmer 1.2s ease-in-out infinite;
+}
+
+@keyframes pageLoadingShimmer {
+    0% {
+        background-position: 100% 0;
+    }
+    100% {
+        background-position: -100% 0;
+    }
+}
