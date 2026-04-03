@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import ProgressBar from './progressBar/index'
-import "./index.css"
+import './index.css'
 
 const lines = [
     "> Initializing system...",
@@ -22,26 +23,34 @@ const lines = [
 
 
 export default function Loader() {
+    const navigate = useNavigate()
     const [displayedLine, setDisplayedLine] = useState([])
     const [currentLine, setCurrentLine] = useState("")
     const [lineIndex, setLineIndex] = useState(0)
     const [charIndex, setCharIndex] = useState(0)
     const [showProgress, setShowProgress] = useState(false)
     const [progressDone, setProgressDone] = useState(false)
+    const progressComplete = useRef(false)
 
+    const handleProgressComplete = useCallback(() => {
+        if (progressComplete.current) return
+        progressComplete.current = true
+        setProgressDone(true)
+        setShowProgress(false)
+        setLineIndex((prev) => prev + 1)
+    }, [])
 
+    /* eslint-disable react-hooks/set-state-in-effect -- staged terminal typewriter animation */
     useEffect(() => {
-
         if (lineIndex >= lines.length) return;
 
         if (lines[lineIndex] === "> Preparing experience" && !showProgress) {
             setShowProgress(true)
         }
-        
-        if (showProgress && !progressDone && charIndex === 0) { 
-            return 
-        };
 
+        if (showProgress && !progressDone && charIndex === 0) {
+            return
+        }
 
         if (charIndex < lines[lineIndex].length) {
             const timeout = setTimeout(() => {
@@ -56,13 +65,13 @@ export default function Loader() {
                 setCharIndex(0)
 
                 if (lines[lineIndex] !== "> Preparing experience") {
-                    setLineIndex((prev) => prev + 1)}
+                    setLineIndex((prev) => prev + 1)
+                }
             }, 1500)
             return () => clearTimeout(timeout)
         }
-
-
-    }, [charIndex, lineIndex, showProgress, progressDone])
+    }, [charIndex, lineIndex, showProgress, progressDone]) // eslint-disable-line react-hooks/exhaustive-deps -- currentLine snapshot in timeout
+    /* eslint-enable react-hooks/set-state-in-effect */
     return (
         <div className='loaderTerminal'>
 
@@ -73,20 +82,26 @@ export default function Loader() {
 
             })}
 
-            <p>
-                {currentLine}
-                <span className='cursor'>|</span>
-            </p>
+            {lineIndex < lines.length ? (
+                <p>
+                    {currentLine}
+                    <span className="cursor">|</span>
+                </p>
+            ) : null}
 
-            {showProgress && !progressDone && (<ProgressBar
-                start={showProgress}
-                onComplete={() => {
-                    setProgressDone(true)
-                    setLineIndex((prev) => prev + 1)
-                }}
-            />)}
+            {showProgress && !progressDone && (
+                <ProgressBar start={showProgress} onComplete={handleProgressComplete} />
+            )}
 
-
+            {lineIndex >= lines.length ? (
+                <button
+                    type="button"
+                    className="loaderTerminal__cta"
+                    onClick={() => navigate('/loading')}
+                >
+                    [ CONTINUAR ]
+                </button>
+            ) : null}
         </div>
     )
 }
