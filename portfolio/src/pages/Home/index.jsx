@@ -50,6 +50,8 @@ export default function Home() {
 
     const aboutGridRef = useRef(null)
 
+    const footerRef = useRef(null)
+
 
 
     useEffect(() => {
@@ -78,6 +80,8 @@ export default function Home() {
 
         const gridEl = aboutGridRef.current
 
+        const footerEl = footerRef.current
+
 
 
         if (!home || !spacer || !panel || !titleEl || !gridEl) return
@@ -98,6 +102,8 @@ export default function Home() {
 
             gsap.set([titleEl, gridEl], { opacity: 1, y: 0 })
 
+            if (footerEl) gsap.set(footerEl, { autoAlpha: 0 })
+
             return
 
         }
@@ -111,6 +117,8 @@ export default function Home() {
             gsap.set(titleEl, { opacity: 0, y: 32 })
 
             gsap.set(gridEl, { opacity: 0, y: 28 })
+
+            if (footerEl) gsap.set(footerEl, { autoAlpha: 1 })
 
 
 
@@ -143,6 +151,22 @@ export default function Home() {
                 0,
 
             )
+
+            if (footerEl) {
+
+                tl.fromTo(
+
+                    footerEl,
+
+                    { autoAlpha: 1 },
+
+                    { autoAlpha: 0, ease: 'none', duration: 0.28 },
+
+                    0,
+
+                )
+
+            }
 
             tl.fromTo(
 
@@ -322,7 +346,7 @@ export default function Home() {
 
 
 
-                <footer className="home__footer">
+                <footer className="home__footer" ref={footerRef}>
 
                     <span className="home-lang__label">{t.home.langLabel}</span>
 
