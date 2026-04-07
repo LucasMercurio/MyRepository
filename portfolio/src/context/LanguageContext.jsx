@@ -18,6 +18,13 @@ const translations = {
     loading: {
         text: { pt: 'Carregando...', en: 'Loading...' },
     },
+    skills: {
+        title: { pt: 'Minhas Skills', en: 'My Skills' },
+        subtitle: {
+            pt: 'Linguagens mais utilizadas nos meus projetos do GitHub',
+            en: 'Most used languages across my GitHub projects',
+        },
+    },
 }
 
 export function LanguageProvider({ children }) {
@@ -52,6 +59,7 @@ export function LanguageProvider({ children }) {
             home: pick(translations.home),
             about: pick(translations.about),
             loading: pick(translations.loading),
+            skills: pick(translations.skills),
         }
     }, [locale])
 
