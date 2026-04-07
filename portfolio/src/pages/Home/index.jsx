@@ -8,6 +8,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 import { useLanguage } from '../../context/useLanguage'
 
+import SkillsChart from './SkillsChart'
+
 import './index.css'
 
 
@@ -52,6 +54,10 @@ export default function Home() {
 
     const footerRef = useRef(null)
 
+    const spacer2Ref = useRef(null)
+    const skillsPanelRef = useRef(null)
+    const skillsTitleRef = useRef(null)
+
 
 
     useEffect(() => {
@@ -84,7 +90,11 @@ export default function Home() {
 
 
 
+        const spacer2 = spacer2Ref.current
+        const skillsPanel = skillsPanelRef.current
+        const skillsTitleEl = skillsTitleRef.current
         if (!home || !spacer || !panel || !titleEl || !gridEl) return
+        if (!spacer2 || !skillsPanel || !skillsTitleEl) return
 
 
 
@@ -103,6 +113,9 @@ export default function Home() {
             gsap.set([titleEl, gridEl], { opacity: 1, y: 0 })
 
             if (footerEl) gsap.set(footerEl, { autoAlpha: 0 })
+
+            gsap.set(skillsPanel, { autoAlpha: 1, scale: 1 })
+            gsap.set(skillsTitleEl, { opacity: 1, y: 0 })
 
             return
 
@@ -190,6 +203,54 @@ export default function Home() {
 
                 0.28,
 
+            )
+
+            /* ── Fase 2: About sai PRIMEIRO, depois Skills entra ── */
+            /*
+             * A timeline tl2 é dividida em duas metades:
+             *   0 → 0.4   : About desliza pra CIMA e desaparece
+             *   0.4 → 1.0  : Skills entra com SCALE (zoom do centro)
+             *
+             * Assim não há sobreposição — um sai, o outro entra.
+             * A diversidade visual vem do TIPO de animação:
+             *   - About usou slide vertical (yPercent)
+             *   - Skills usa scale + opacity (zoom in)
+             */
+
+            gsap.set(skillsPanel, { autoAlpha: 0, scale: 0.88 })
+            gsap.set(skillsTitleEl, { opacity: 0, y: 24 })
+
+            const tl2 = gsap.timeline({
+                scrollTrigger: {
+                    trigger: spacer2,
+                    start: 'top bottom',
+                    end: 'top top',
+                    scrub: 1,
+                },
+            })
+
+            // PRIMEIRA METADE (0 → 0.4): About sai deslizando pra cima
+            tl2.fromTo(
+                panel,
+                { yPercent: 0 },
+                { yPercent: -100, ease: 'none', duration: 0.4 },
+                0,
+            )
+
+            // SEGUNDA METADE (0.4 → 1.0): Skills entra com zoom
+            tl2.fromTo(
+                skillsPanel,
+                { autoAlpha: 0, scale: 0.88 },
+                { autoAlpha: 1, scale: 1, ease: 'none', duration: 0.35 },
+                0.4,
+            )
+
+            // Título aparece logo após o painel
+            tl2.fromTo(
+                skillsTitleEl,
+                { opacity: 0, y: 24 },
+                { opacity: 1, y: 0, ease: 'none', duration: 0.2 },
+                0.5,
             )
 
         }, home)
@@ -502,6 +563,32 @@ export default function Home() {
 
                 </div>
 
+            </section>
+
+            {/* Segundo spacer — rola aqui pra animar a seção Skills */}
+            <div
+                ref={spacer2Ref}
+                className="home__scroll-spacer"
+                aria-hidden="true"
+            />
+
+            {/* Seção Skills — usa animação de SCALE (diferente do slide do About) */}
+            <section
+                ref={skillsPanelRef}
+                className="home-skills"
+                aria-labelledby="home-skills-title"
+            >
+                <div className="home-skills__inner">
+                    <h2
+                        id="home-skills-title"
+                        ref={skillsTitleRef}
+                        className="home-skills__title"
+                    >
+                        {t.skills.title}
+                    </h2>
+                    <p className="home-skills__subtitle">{t.skills.subtitle}</p>
+                    <SkillsChart />
+                </div>
             </section>
 
         </div>
